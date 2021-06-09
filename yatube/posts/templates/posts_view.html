@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {% if author %}
+      Записи автора {{ author.username }}
+    {% elif group %}
+      Записи сообщества {{ group.title }}
+    {% else %}
+      Последние обновления на сайте
+    {% endif %}
+{% endblock %}
+
+{% block header %}
+    {% if author %}
+      {{ author.username }}
+    {% elif group %}
+      {{ group.title }}
+    {% else %}
+      Последние обновления на сайте
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+{% include "follow_menu.html" %}
+<div class="row">    
+    {% include "author_profile.html" %}
+
+    {% include "group_profile.html" %}
+
+    {% if author or group  %}
+    <div class="col-md-9">
+    {% endif %}
+        
+        {% load cache %}
+        {% cache 20 posts_list request.path page.number %}
+
+        {% for post in posts %}
+          {% include "post_profile.html" %}
+        {% endfor %}
+
+        {% include "paginator.html" %}
+
+        {% endcache %}
+
+    {% if author or group %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -60,6 +60,9 @@ coverage.xml
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
+static/
+migrations/
+media/
 
 # Flask stuff:
 instance/
@@ -140,13 +143,10 @@ dmypy.json
 .vscode/
 *.code-workspace
 
+# Filebased EMAIL
+sent_emails/
+
 # Local History for Visual Studio Code
 .history/
 
 .mypy_cache
-
-# папки со статикой и медиа
-static/
-yatube/posts/static/
-yatube/media/
-
