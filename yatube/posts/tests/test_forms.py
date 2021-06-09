@@ -125,28 +125,24 @@ class PostsFormsTests(TestCase):
             data=form_data,
             follow=True
         )
+        link = reverse('post_new')
         self.assertRedirects(
             response,
-            f'{LOGIN_URL}?next={reverse("post_new")}'
+            f'{LOGIN_URL}?next={link}'
         )
 
     def test_post_comment_anonymous(self):
-
         form_data = {
             'text': 'Текст комментария к посту',
         }
-
         post_kwargs = {
             'username': TEST_USER_NAME,
             'post_id': self.post.id
         }
-
         link = reverse('add_comment', kwargs=post_kwargs)
-
         response = self.guest_client.post(
             link,
             data=form_data,
             follow=True
         )
-
         self.assertRedirects(response, f'{LOGIN_URL}?next={link}')

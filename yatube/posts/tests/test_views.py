@@ -182,12 +182,7 @@ class PostsViewsTests(TestCase, AppViewsTestBase):
             response_from_cache.content, response_cache_clear.content
         )
 
-    def test_user_follow_unfollow(self):
-        follow_link = reverse(
-            'profile_follow', kwargs={
-                'username': self.user_following.username
-            }
-        )
+    def test_user_unfollow(self):
         unfollow_link = reverse(
             'profile_unfollow', kwargs={
                 'username': self.user_following.username
@@ -205,6 +200,13 @@ class PostsViewsTests(TestCase, AppViewsTestBase):
             Follow.objects.filter(
                 user=self.user, author=self.user_following
             ).exists()
+        )
+
+    def test_user_follow(self):
+        follow_link = reverse(
+            'profile_follow', kwargs={
+                'username': self.user_following.username
+            }
         )
 
         response = self.authorized_client.get(follow_link, follow=True)

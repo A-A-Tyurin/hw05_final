@@ -13,6 +13,8 @@ from yatube.settings import PAGINATOR_PAGE_SIZE
 from .forms import PostForm, CommentForm
 from .models import Group, Post
 
+User = get_user_model()
+
 
 @method_decorator(login_required_for_page(
     reverse_address_list=[
@@ -73,7 +75,6 @@ class PostsListView(ListView):
         # process Author page request
         if self.kwargs.get("username"):
             username = self.kwargs.get("username")
-            User = get_user_model()
             author = get_object_or_404(User, username=username)
             params = {
                 "author": author,
@@ -178,7 +179,6 @@ def add_comment(request, **kwargs):
 
 @login_required
 def profile_follow(request, username):
-    User = get_user_model()
     author = get_object_or_404(User, username=username)
 
     is_following = author.following.filter(user=request.user).exists()
@@ -191,11 +191,11 @@ def profile_follow(request, username):
 
 @login_required
 def profile_unfollow(request, username):
-    User = get_user_model()
     author = get_object_or_404(User, username=username)
+    following = author.following.filter(user=request.user)
 
-    if author.following.filter(user=request.user).exists():
-        author.following.filter(user=request.user).delete()
+    if following.exists():
+        following.delete()
 
     return redirect("profile", username)
 
