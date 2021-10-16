@@ -26,6 +26,7 @@ SECRET_KEY = '^wk=$rvix)!nyxfoy@2&os=$m^oekz8nniqvy5cg-l+uj11=mn'
 DEBUG = True
 
 ALLOWED_HOSTS = [
+    "178.154.254.253",
     "localhost",
     "127.0.0.1",
     "[::1]",
