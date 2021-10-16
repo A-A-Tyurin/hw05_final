@@ -2,6 +2,7 @@
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
+from django.db.models.query import Prefetch
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -11,7 +12,7 @@ from common_lib.decorators import author_required, login_required_for_page
 from yatube.settings import PAGINATOR_PAGE_SIZE
 
 from .forms import PostForm, CommentForm
-from .models import Group, Post
+from .models import Group, Post, Comment
 
 User = get_user_model()
 
@@ -35,7 +36,23 @@ class PostsListView(ListView):
         - If there is a slug, take posts filtered by group
         - If there is a username, take posts filtered by user
         """
-        postsManager = Post.objects.select_related("author")
+        postsManager = (
+            Post.objects.select_related("author", "group")
+                        .prefetch_related(
+                            Prefetch(
+                                "comments",
+                                queryset=Comment.objects
+                                                .select_related("author")
+                                                .only(
+                                                    "id", "post_id", "text",
+                                                    "created", "author__id",
+                                                    "author__username"
+                                                )))
+                        .only("id", "text", "pub_date", "group_id",
+                              "author_id", "image", "group__id",
+                              "group__title", "group__slug", "author__id",
+                              "author__username")
+        )
 
         # process Group page request
         if self.kwargs.get("slug"):
@@ -75,7 +92,10 @@ class PostsListView(ListView):
         # process Author page request
         if self.kwargs.get("username"):
             username = self.kwargs.get("username")
-            author = get_object_or_404(User, username=username)
+            author = get_object_or_404(
+                User.objects.only("username", "first_name", "last_name"),
+                username=username
+            )
             params = {
                 "author": author,
                 "user_is_follower": (self.request.user.is_authenticated
@@ -102,9 +122,24 @@ class PostDetailView(DetailView):
         :model:'posts.Post' id and :model:'auth.User' username parameters
         """
         username = self.kwargs.get("username")
-        post_id = self.kwargs.get("post_id")
-        return (Post.objects.select_related("author")
-                            .filter(id=post_id, author__username=username))
+        return (Post.objects
+                    .select_related("author", "group")
+                    .prefetch_related(
+                        Prefetch(
+                            "comments",
+                            queryset=Comment.objects
+                                            .select_related("author")
+                                            .only(
+                                                "id", "post_id", "text",
+                                                "created", "author__id",
+                                                "author__username"
+                                            )))
+                    .only("id", "text", "pub_date", "group_id",
+                          "author_id", "image", "group__id",
+                          "group__title", "group__slug", "author__id",
+                          "author__username", "author__first_name",
+                          "author__last_name")
+                    .filter(author__username=username))
 
     def get_context_data(self, **kwargs):
         """
@@ -112,7 +147,17 @@ class PostDetailView(DetailView):
         to the context
         """
         data = super().get_context_data(**kwargs)
-        params = {"comment_form": CommentForm()}
+        user_is_follower = (
+            self.request.user.is_authenticated
+            and self.request.user.follower.filter(
+                author__username=self.kwargs.get("username")
+            )
+        )
+
+        params = {
+            "comment_form": CommentForm(),
+            "user_is_follower": user_is_follower
+        }
         data.update(params)
         return data
 
@@ -147,8 +192,7 @@ class PostFormUpdateView(UpdateView):
         :model:'posts.Post' id and :model:'auth.User' username parameters
         """
         username = self.kwargs.get("username")
-        post_id = self.kwargs.get("post_id")
-        return (Post.objects.filter(id=post_id, author__username=username))
+        return (Post.objects.filter(author__username=username))
 
     def get_success_url(self):
         """

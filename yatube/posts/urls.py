@@ -1,7 +1,5 @@
 """ Url pathes for 'posts' application. """
 
-from django.conf import settings
-from django.conf.urls.static import static
 from django.urls import path
 
 from .views import add_comment, profile_follow, profile_unfollow
@@ -25,12 +23,3 @@ urlpatterns = [
     path("<str:username>/<int:post_id>/comment", add_comment,
          name="add_comment"),
 ]
-
-if settings.DEBUG:
-    urlpatterns += static(
-        settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
-    )
-
-    urlpatterns += static(
-        settings.STATIC_URL, document_root=settings.STATIC_ROOT
-    )

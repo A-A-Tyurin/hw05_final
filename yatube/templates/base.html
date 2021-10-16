@@ -6,13 +6,19 @@
         <title>{% block title %}The Last Social Media You'll Ever Need{% endblock %} | Yatube</title>
         {% load static %}
         <link rel="stylesheet" href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/css/layout.css' %}">
+        {% block stylesheets %}{% endblock %}
         <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
         <script src="{% static 'bootstrap/dist/js/bootstrap.min.js' %}"></script>
+        {% block scripts %}{% endblock %}
     </head>
     <body>
         {% include 'nav.html' %}
         <main>
             <div class="container">
+                <h1 class="display-4 mt-1 mb-1 mt-sm-3 mb-sm-3">
+                    {% block page-title %}{% endblock %}
+                </h1>
                 {% block content %}
                 {% endblock content %}
             </div>

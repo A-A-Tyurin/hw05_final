@@ -1,14 +1,29 @@
-<nav class="navbar navbar-light" style="background-color: #e3f2fd;">
-    <a class="navbar-brand" href="{% url 'index' %}"><span style="color:red">Ya</span>tube</a>
-    <nav class="my-2 my-md-0 mr-md-3">
+<header class="border-bottom">
+    <nav class="navbar container h-100">
+        <a class="navbar-brand flex-grow-1" href="{% url 'index' %}"><span class="header-logo"></span></a>
         {% if user.is_authenticated %}
-        Пользователь: {{ user.username }}.
-        <a class="p-2 text-dark" href="{% url 'post_new' %}">Новая запись</a>
-        <a class="p-2 text-dark" href="{% url 'password_change' %}">Изменить пароль</a>
-        <a class="p-2 text-dark" href="{% url 'logout' %}">Выйти</a>
+            <a class="p-2 text-dark" href="{% url 'post_new' %}">Новая запись</a> |
+            <a class="p-2 text-dark mr-1 mr-sm-5" href="{% url 'follow_index' %}">Мои подписки</a>    
+
+            <b class="mr-1"><span style="color: red;">{{ user.username|slice:":1" }}</span>{{ user.username|slice:"1:" }}</b>
+            
+            <div class="dropdown">
+                <a href="#" class="text-decoration-none dropdown-toggle" id="dropdownUser" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {% load thumbnail %}
+                {% thumbnail user.profile.avatar "52x52" crop="center" upscale=True as im %}
+                    <img class="rounded-circle" src="{{ im.url }}">
+                {% endthumbnail %}
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownUser">
+                    <a class="dropdown-item" href="#">Профиль</a>
+                    <a class="dropdown-item" href="{% url 'password_change' %}">Изменить пароль</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{% url 'logout' %}">Выйти</a>
+                </div>
+            </div>
         {% else %}
-        <a class="p-2 text-dark" href="{% url 'login' %}">Войти</a> |
-        <a class="p-2 text-dark" href="{% url 'signup' %}">Регистрация</a>
+            <a class="p-2 text-dark" href="{% url 'login' %}">Войти</a> |
+            <a class="p-2 text-dark" href="{% url 'signup' %}">Регистрация</a>
         {% endif %}
     </nav>
-</nav> 
+</header>
