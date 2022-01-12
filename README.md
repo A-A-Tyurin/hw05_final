@@ -1,7 +1,7 @@
 [![Python](https://img.shields.io/badge/-Python-464646?style=flat-square&logo=Python)](https://www.python.org/)
-[![Django](https://img.shields.io/badge/-Django-464646?style=flat-square&logo=Django)](https://www.djangoproject.com/))
-[![SQLite3](https://img.shields.io/badge/-SQLite3-464646?style=flat-square&logo=SQLite3)](https://www.sqlite.org/))
-[![unittest](https://img.shields.io/badge/-unittest-464646?style=flat-square&logo=unittest)](https://docs.python.org/3/library/unittest.html))
+[![Django](https://img.shields.io/badge/-Django-464646?style=flat-square&logo=Django)](https://www.djangoproject.com/)
+[![SQLite3](https://img.shields.io/badge/-SQLite3-464646?style=flat-square&logo=SQLite3)](https://www.sqlite.org/)
+[![unittest](https://img.shields.io/badge/-unittest-464646?style=flat-square&logo=unittest)](https://docs.python.org/3/library/unittest.html)
 
 ## Проект
 
